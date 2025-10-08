@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Button from '@/components/button';
-import Header from '@/components/header';
+import useNavigationWithTransition from "@/hooks/useNavigatonWithTransition";
+import axiosInstance from "@/lib/axiosInstance";
+import {useUserStore} from "@/store/useUser";
+import {useLoadingStore} from "@/store/useLoading";
+
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -11,6 +15,7 @@ export default function Login() {
     password: ''
   });
 
+	const {setIsLoading} = useLoadingStore();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -19,9 +24,23 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+	const {setUser} = useUserStore();
+	const {handleNavigate} = useNavigationWithTransition()
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-		
+	  setIsLoading(true);
+	  const res = await axiosInstance.post("/auth/login", formData)
+	  if(res.status === 200){
+		  setIsLoading(false);
+		  const data = res.data;
+		  setUser(data.user.username)
+			localStorage.setItem("access_token", data.token)
+		  localStorage.setItem("username", data.user.username)
+		  handleNavigate("/");
+	  }
+		else{
+			alert("❌ 로그인 실패: ");
+		}
   };
 
   return (
@@ -86,7 +105,7 @@ export default function Login() {
             {/* 회원가입 링크 */}
             <div className="text-left pt-2">
               <a 
-                href="#" 
+                href="/signup"
                 className="text-blue-500 hover:text-blue-600 text-sm sm:text-base transition-colors"
               >
                 회원이 아니신가요?
@@ -95,6 +114,7 @@ export default function Login() {
 
             {/* 로그인 버튼 */}
             <Button
+	            onClick={handleSubmit}
               type="submit"
               variant="primary"
               className="w-full py-3 text-sm sm:text-base font-extrabold rounded-lg"

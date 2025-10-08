@@ -4,6 +4,7 @@ import { useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {Suspense, useEffect, useRef} from "react";
 import { Group } from "three";
+import {getCarNumberByName} from "@/utils/changeToCar";
 
 export const carModel : Record<string, CarModel> = {
 	"sportCar" : {
@@ -102,8 +103,10 @@ function CarModel({ url , x, z, scale, start}: CarModelProps) {
 	return <primitive ref={ref} object={scene} scale={scale} position={start} />;
 }
 
-export default function CarScene() {
-	const model = carModel.future
+
+export default function CarScene({carName}: {carName : string}) {
+	console.log(getCarNumberByName(carName), carName)
+	const model =  carModel[getCarNumberByName(carName) ?? ""]
 	useEffect(() => {
 		const audio = new Audio("/sound/fadeIn.m4a");
 		audio.volume = 1; // 볼륨 조정

@@ -202,9 +202,6 @@ h4 { font-size: var(--font-size-xl); }
 h5 { font-size: var(--font-size-lg); }
 h6 { font-size: var(--font-size-base); }
 
-p {
-  margin: 0 0 var(--spacing-md) 0;
-}
 
 /* ===== 링크 ===== */
 a {

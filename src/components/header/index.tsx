@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Button from "@/components/button";
 import useNavigationWithTransition from "@/hooks/useNavigatonWithTransition";
+import {useUserStore} from "@/store/useUser";
 
 export default function Header() {
   const {handleNavigate} = useNavigationWithTransition()
-
+	const {username} = useUserStore()
   return (
     <header className="w-full bg-[#1d1d1d] fixed top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,10 +29,27 @@ export default function Header() {
           </div>
 
           {/* 우측 액션 버튼들 */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            <Button onClick={() => handleNavigate('/result')} variant="primary" size="sm">
-              로그인
-            </Button>
+          <div className="flex items-center sm:space-x-4">
+	          {username ?
+		          <div
+			          className="flex items-center space-x-2 cursor-pointer"
+			          onClick={()=>handleNavigate("/record")}
+		          >
+			          <div className="">
+				          <Image
+					          src="/people2.svg"
+					          alt="People Icon"
+					          width={20}
+					          height={20}
+					          className="sm:w-6 sm:h-6 object-contain z-0"
+				          />
+			          </div>
+			          <p className={"text-white text-xl font-bold"}>{username}</p>
+		          </div>
+		          : <Button onClick={() => handleNavigate('/login')} variant="primary" size="sm">
+			          로그인
+		          </Button>
+						}
           </div>
         </div>
       </div>

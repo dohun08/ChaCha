@@ -1,24 +1,73 @@
 'use client';
 
 import Image from 'next/image';
+import axiosInstance from "@/lib/axiosInstance";
+import {useEffect, useState} from "react";
+import {useLoadingStore} from "@/store/useLoading";
 
-type Record = {
+interface RecordResponse {
+	id: number,
+	user_uuid: string,
+	car_id: number,
+	created_at: string
+}
+
+type RecordData = {
 	id: number;
 	title: string;
 	date: string;
 	image: string;
 };
 
-const records: Record[] = [
-	{ id: 1, title: '스포츠카 성격', date: '2025-01-01', image: '/sportcar.svg' },
-	{ id: 2, title: '스포츠카 성격', date: '2025-01-01', image: '/truck.svg' },
-	{ id: 3, title: '스포츠카 성격', date: '2025-01-01', image: '/future.svg' },
-	{ id: 4, title: '스포츠카 성격', date: '2025-01-01', image: '/fire.svg' },
-	{ id: 5, title: '스포츠카 성격', date: '2025-01-01', image: '/police.svg' },
-	{ id: 6, title: '스포츠카 성격', date: '2025-01-01', image: '/sportcar.svg' },
-];
+type CarInfo = { name: string; url: string };
+
+const carModel : Record<number, CarInfo> = {
+	1 : {
+		name : "스포츠카",
+		url : "/sportcar.svg"
+	},
+	2 : {
+		name : "미래차",
+		url : "/future.svg"
+	},
+	3 : {
+		name : "소방차",
+		url : "/fire.svg"
+	},
+	4 : {
+		name : "경찰차",
+		url : "/police.svg"
+	},
+	5 : {
+		name : "트럭",
+		url : "/truck.svg"
+	},
+}
 
 export default function RecentResultsPage() {
+	const [records, setRecords] = useState<RecordData[]>([]);
+	const {setIsLoading} = useLoadingStore()
+	const getRecord = async () =>{
+		setIsLoading(true)
+		const res = await axiosInstance.get("/record");
+		if(res.status === 200){
+			const data: RecordResponse[] = res.data.records;
+			setIsLoading(false);
+			setRecords(data?.map(item=>{
+				return {
+					id : item.id,
+					title : carModel[item.car_id].name,
+					date : item.created_at,
+					image : carModel[item.car_id].url
+				}
+				})
+			)
+		}
+	}
+	
+	useEffect(() => {
+		getRecord();
+	}, []);
 	return (
 		<div className="min-h-screen bg-[#121212] text-white flex flex-col items-center py-24 px-4">
 			
@@ -30,7 +79,7 @@ export default function RecentResultsPage() {
 				{records.map((record) => (
 					<div
 						key={record.id}
-						className="bg-white rounded-2xl flex items-center p-4 shadow-md text-black hover:scale-[1.02] transition"
+						className="bg-white rounded-2xl flex items-center p-4 shadow-md text-black"
 					>
 						<Image
 							src={record.image}

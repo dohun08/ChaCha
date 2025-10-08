@@ -4,17 +4,33 @@ import { useState } from "react";
 import QuestionCard from "@/containers/question/questionCard";
 import { questions } from "@/constants/question";
 import Button from "@/components/button";
+import useNavigationWithTransition from "@/hooks/useNavigatonWithTransition";
+import {useResultStore} from "@/store/useResult";
+import axiosInstance from "@/lib/axiosInstance";
+import {useNavigationTransitionStore} from "@/store/useNavigationTransition";
+import {useLoadingStore} from "@/store/useLoading";
 
 export default function Home() {
-	const [answers, setAnswers] = useState<Record<number, number>>({});
+	const [answers, setAnswers] = useState<number[]>([]);
 	
 	const handleSelect = (id: number, value: number) => {
 		setAnswers((prev) => ({ ...prev, [id]: value }));
 	};
 	
-	const handleSubmit = () => {
-		console.log("✅ 선택된 값:", answers);
+	const {setResult} = useResultStore();
+	const {setIsLoading} = useLoadingStore()
+	const {handleNavigate} = useNavigationWithTransition()
+	const handleSubmit = async () => {
+		setIsLoading(true)
+		const res = await axiosInstance.post("/question", {
+			answers : answers
+		});
 		
+		if(res.status === 200) {
+			setIsLoading(false);
+			handleNavigate("/result");
+			setResult(res.data.car);
+		}
 	};
 	
 	return (

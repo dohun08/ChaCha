@@ -4,6 +4,9 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Button from '@/components/button';
+import axiosInstance from "@/lib/axiosInstance";
+import useNavigationWithTransition from "@/hooks/useNavigatonWithTransition";
+import {useLoadingStore} from "@/store/useLoading";
 
 export default function Signup() {
 	const [formData, setFormData] = useState({
@@ -20,9 +23,19 @@ export default function Signup() {
 		}));
 	};
 	
-	const handleSubmit = (e: React.FormEvent) => {
+	const {setIsLoading} = useLoadingStore()
+	const {handleNavigate} = useNavigationWithTransition()
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		
+		setIsLoading(true);
+		const res = await axiosInstance.post("/auth/signup", formData);
+		if(res.status === 200){
+			setIsLoading(false);
+			handleNavigate("/login");
+		}
+		else{
+			alert("❌ 회원가입 실패: ");
+		}
 	};
 	
 	return (
@@ -106,7 +119,7 @@ export default function Signup() {
 					
 					{/* 로그인 버튼 */}
 					<Button
-						type="submit"
+						onClick={handleSubmit}
 						variant="primary"
 						className="w-full py-3 text-sm sm:text-base font-extrabold rounded-lg"
 					>

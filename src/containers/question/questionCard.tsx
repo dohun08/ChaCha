@@ -43,7 +43,7 @@ export default function QuestionCard({ id, text, selected, onSelect, minText, ma
 								value={i + 1}
 								checked={selected === i + 1}
 								onChange={() => onSelect(id, i + 1)}
-								className={`cursor-pointer hover:scale-110 hover:bg-green-100 appearance-none border-2 border-green-500 rounded-full checked:bg-green-500 transition-all ${sizeClasses[i]}`}
+								className={`cursor-pointer transition-all duration-200 ease-in-out active:bg-green-500 hover:scale-110 appearance-none border-2 border-green-500 rounded-full checked:bg-green-500  ${sizeClasses[i]}`}
 							/>
 							<span className="mt-2">{opt}</span>
 						</label>

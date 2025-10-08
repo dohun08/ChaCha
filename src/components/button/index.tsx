@@ -5,7 +5,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   variant?: 'default' | 'primary';
   size?: 'default' | 'sm' | 'lg';
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e: React.FormEvent) => void;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

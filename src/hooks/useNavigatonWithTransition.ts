@@ -1,6 +1,7 @@
 import {useEffect} from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import {useNavigationTransitionStore} from "@/store/useNavigationTransition";
+import {useLoadingStore} from "@/store/useLoading";
 
 export default function useNavigationWithTransition() {
   const navigate = useRouter();
