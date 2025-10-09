@@ -9,6 +9,7 @@ import {useResultStore} from "@/store/useResult";
 import axiosInstance from "@/lib/axiosInstance";
 import {useNavigationTransitionStore} from "@/store/useNavigationTransition";
 import {useLoadingStore} from "@/store/useLoading";
+import {useQuestion} from "@/hooks/useQuestion";
 
 export default function Home() {
 	const [answers, setAnswers] = useState<number[]>([]);
@@ -17,19 +18,13 @@ export default function Home() {
 		setAnswers((prev) => ({ ...prev, [id]: value }));
 	};
 	
-	const {setResult} = useResultStore();
-	const {setIsLoading} = useLoadingStore()
-	const {handleNavigate} = useNavigationWithTransition()
+	const { submitQuestion } = useQuestion();
+	
 	const handleSubmit = async () => {
-		setIsLoading(true)
-		const res = await axiosInstance.post("/question", {
-			answers : answers
-		});
-		
-		if(res.status === 200) {
-			setIsLoading(false);
-			handleNavigate("/result");
-			setResult(res.data.car);
+		try {
+			await submitQuestion.mutateAsync(answers);
+		} catch (err) {
+			console.error(err);
 		}
 	};
 	

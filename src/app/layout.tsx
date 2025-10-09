@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import LoadingAnimation from "@/components/loading";
+import {QueryClient} from "@tanstack/react-query";
+import Providers from "@/components/react-query";
+import {dehydrate} from "@tanstack/query-core";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +27,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+	const queryClient = new QueryClient();
+	const dehydratedState = dehydrate(queryClient);
   return (
     <html lang="ko">
       <body
@@ -31,7 +36,9 @@ export default function RootLayout({
       >
         <Header />
         <LoadingAnimation />
-        {children}
+        <Providers dehydratedState={dehydratedState}>
+	        {children}
+        </Providers>
       </body>
     </html>
   );
