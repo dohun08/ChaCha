@@ -12,11 +12,10 @@ export const useUserStore = create<UserState>()(
 		(set) => ({
 			username: "",
 			setUser: (username: string) => set({ username }),
-			clearUser: () => set({ username: "" }), // 로그아웃 시 초기화용
+			clearUser: () => set({ username: "" }),
 		}),
 		{
 			name: 'user',
-			getStorage: () => localStorage,
 		}
 	)
 );
