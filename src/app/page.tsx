@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Button from '@/components/button';
 import useNavigationWithTransition from "@/hooks/useNavigatonWithTransition";
+import {useUserStore} from "@/store/useUser";
 
 export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -76,6 +77,15 @@ export default function Home() {
   }, [isVisible]);
 
 	const {handleNavigate} = useNavigationWithTransition()
+	const {username} = useUserStore()
+	const handleStart = () =>{
+		if(username){
+			handleNavigate("/question")
+		}
+		else {
+			handleNavigate("/login")
+		}
+	}
   return (
       <main className="relative w-screen h-screen overflow-hidden">
         {/* 비디오 배경 */}
@@ -112,7 +122,7 @@ export default function Home() {
             {/* 시작 버튼 */}
             <div className="pt-4 sm:pt-8">
               <Button
-	              onClick={()=>handleNavigate("/question")}
+	              onClick={handleStart}
                 variant="default" 
                 size="lg"
                 className="bg-white text-primary hover:bg-primary hover:text-white text-xl sm:text-2xl px-8 sm:px-12 py-3 sm:py-4 rounded-xl font-extrabold shadow-lg hover:shadow-xl transition-all duration-300"
