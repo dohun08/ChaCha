@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/client';
-import jwt from 'jsonwebtoken';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 import { getCarCode } from '@/utils/changeToCar';
 
 type CarType = '🏎️' | '🚘' | '🚓' | '🚒' | '🚛';
@@ -18,6 +18,11 @@ const scoreMap: Record<number, Record<CarType, number[]>> = {
 	10: { '🏎️': [1, 2, 3, 4, 5], '🚘': [2, 3, 4, 5, 3], '🚓': [5, 4, 3, 2, 1], '🚒': [5, 4, 3, 2, 1], '🚛': [3, 4, 5, 3, 2] },
 };
 
+export interface DecodedToken extends JwtPayload {
+	id: string;
+	username: string;
+}
+
 export const POST = async (req: Request): Promise<Response> => {
 	try {
 		const authHeader = req.headers.get('Authorization');
@@ -28,9 +33,9 @@ export const POST = async (req: Request): Promise<Response> => {
 		const token = authHeader.split(' ')[1];
 		
 		// ✅ JWT 디코딩
-		let decoded: any;
+		let decoded
 		try {
-			decoded = jwt.verify(token, process.env.JWT_SECRET!);
+			decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken
 		} catch (err) {
 			console.error('❌ Invalid token:', err);
 			return new Response(JSON.stringify({ error: '유효하지 않은 토큰입니다.' }), { status: 401 });

@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase/client';
 import jwt from "jsonwebtoken";
+import {DecodedToken} from "@/app/api/question/route";
 
 export const GET = async (req : Request): Promise<Response> => {
 	try {
@@ -11,9 +12,9 @@ export const GET = async (req : Request): Promise<Response> => {
 		const token = authHeader.split(' ')[1];
 		
 		// ✅ 1️⃣ JWT 토큰 디코딩
-		let decoded: any;
+		let decoded;
 		try {
-			decoded = jwt.verify(token, process.env.JWT_SECRET!);
+			decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken
 		} catch (err) {
 			console.error('❌ Invalid token:', err);
 			return new Response(JSON.stringify({ error: '유효하지 않은 토큰입니다.' }), { status: 401 });

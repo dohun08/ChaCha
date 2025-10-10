@@ -1,11 +1,10 @@
 import axios, {
 	AxiosInstance,
-	AxiosResponse,
 	InternalAxiosRequestConfig,
 } from "axios";
 
 // ✅ 응답 제네릭 타입
-export interface ApiResponse<T=any> {
+export interface ApiResponse<T = unknown> {
 	data: T;
 	message?: string;
 	status?: number;
