@@ -4,11 +4,6 @@ import { useState } from "react";
 import QuestionCard from "@/containers/question/questionCard";
 import { questions } from "@/constants/question";
 import Button from "@/components/button";
-import useNavigationWithTransition from "@/hooks/useNavigatonWithTransition";
-import {useResultStore} from "@/store/useResult";
-import axiosInstance from "@/lib/axiosInstance";
-import {useNavigationTransitionStore} from "@/store/useNavigationTransition";
-import {useLoadingStore} from "@/store/useLoading";
 import {useQuestion} from "@/hooks/useQuestion";
 
 export default function Home() {
