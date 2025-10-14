@@ -23,8 +23,8 @@ type CarInfo = { name: string; url: string };
 const carModel: Record<number, CarInfo> = {
 	1: { name: '스포츠카', url: '/sportcar.svg' },
 	2: { name: '미래차', url: '/future.svg' },
-	3: { name: '소방차', url: '/fire.svg' },
-	4: { name: '경찰차', url: '/police.svg' },
+	3: { name: '경찰차', url: '/police.svg' },
+	4: { name: '소방차', url: '/fire.svg' },
 	5: { name: '트럭', url: '/truck.svg' },
 };
 
