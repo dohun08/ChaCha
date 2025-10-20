@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/client';
-import jwt, {JwtPayload} from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { getCarCode } from '@/utils/changeToCar';
 
 type CarType = '🏎️' | '🚘' | '🚓' | '🚒' | '🚛';
@@ -33,9 +33,9 @@ export const POST = async (req: Request): Promise<Response> => {
 		const token = authHeader.split(' ')[1];
 		
 		// ✅ JWT 디코딩
-		let decoded
+		let decoded;
 		try {
-			decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken
+			decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken;
 		} catch (err) {
 			console.error('❌ Invalid token:', err);
 			return new Response(JSON.stringify({ error: '유효하지 않은 토큰입니다.' }), { status: 401 });
@@ -58,7 +58,7 @@ export const POST = async (req: Request): Promise<Response> => {
 			return new Response(JSON.stringify({ error: '유효하지 않은 사용자입니다.' }), { status: 401 });
 		}
 		
-		// ✅ answers 받기 (객체 형태)
+		// ✅ answers 받기
 		const { answers } = await req.json();
 		console.log("answers:", answers);
 		
@@ -70,8 +70,8 @@ export const POST = async (req: Request): Promise<Response> => {
 		const totalScores: Record<CarType, number> = { '🏎️': 0, '🚘': 0, '🚓': 0, '🚒': 0, '🚛': 0 };
 		
 		for (const [key, value] of Object.entries(answers)) {
-			const qNum = Number(key); // "1" → 1
-			const answer = Number(value); // 2
+			const qNum = Number(key);
+			const answer = Number(value);
 			const mapping = scoreMap[qNum];
 			if (!mapping) continue;
 			
@@ -80,15 +80,32 @@ export const POST = async (req: Request): Promise<Response> => {
 			});
 		}
 		
+		// ✅ 각 차량별 최대 가능 점수 계산
+		const maxTotalPerCar: Record<CarType, number> = { '🏎️': 0, '🚘': 0, '🚓': 0, '🚒': 0, '🚛': 0 };
+		for (const [, mapping] of Object.entries(scoreMap)) {
+			(Object.keys(mapping) as CarType[]).forEach((carType) => {
+				maxTotalPerCar[carType] += Math.max(...mapping[carType]);
+			});
+		}
+		
+		// ✅ 퍼센트 계산 (정규화 방식)
+		const percentages: Record<CarType, number> = { '🏎️': 0, '🚘': 0, '🚓': 0, '🚒': 0, '🚛': 0 };
+		(Object.keys(totalScores) as CarType[]).forEach((car) => {
+			const maxScore = maxTotalPerCar[car];
+			const normalized = (totalScores[car] / maxScore) * 100;
+			percentages[car] = Math.round(normalized);
+		});
+		
 		// ✅ 최고 점수 차량 결정
-		const bestCar = Object.entries(totalScores).sort((a, b) => b[1] - a[1])[0][0] as CarType;
+		const bestCar = Object.entries(percentages).sort((a, b) => b[1] - a[1])[0][0] as CarType;
 		
 		// ✅ 결과 저장
+		const nowIso = new Date().toISOString();
 		const { error: insertError } = await supabase.from('result').insert([
 			{
 				user_uuid: user.uuid,
 				car_id: getCarCode(bestCar),
-				created_at: new Date().toISOString(),
+				created_at: nowIso,
 			},
 		]);
 		
@@ -109,6 +126,8 @@ export const POST = async (req: Request): Promise<Response> => {
 				username,
 				result: bestCar,
 				scores: totalScores,
+				percentages,
+				bestPercentage: percentages[bestCar] ?? null,
 				car: carData,
 			}),
 			{ status: 200 }

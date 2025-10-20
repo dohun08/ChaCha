@@ -14,6 +14,7 @@ interface QuestionResponse {
 	username: string;
 	result: string; // 차량 이모지
 	scores: Record<string, number>;
+	percentages?: Record<string, number>; // 서버에서 오는 퍼센트 맵
 	car: {
 		car_id: number;
 		car_name: string;
@@ -38,8 +39,17 @@ export const useQuestion = () => {
 		onSuccess: (data) => {
 			setIsLoading(false);
 			handleNavigate('/result');
-			handleNavigate("/result");
-			setResult(data.car);
+			setResult({
+				result: data.result,
+				percentages: data.percentages ?? {},
+				scores: data.scores ?? {},
+				car_name: data.car.car_name,
+				future: data.car.future,
+				keyword: data.car.keyword,
+				great: data.car.great,
+				bad: data.car.bad,
+				moveStyle: data.car.moveStyle,
+			});
 			console.log('최종 차량 결과:', data.result, data.car);
 		},
 		onError: (err) => {
