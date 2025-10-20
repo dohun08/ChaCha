@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚗 차차 (Chacha)
+> **부제:** 같이 드라이브 하러 갈래요?  
+> 어린이도 즐겁게 참여할 수 있는 **3D 성격유형 검사 웹 서비스**
 
-## Getting Started
+---
 
-First, run the development server:
+## 📘 프로젝트 개요
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **개발 목적:**  
+  Three.js를 활용한 3D 자동차 모델을 통해  
+  텍스트 기반 성격검사의 한계를 극복하는 **시각적·인터랙티브 검사 사이트** 개발
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **핵심 목표:**
+    - 🧩 **3D 렌더링 및 인터랙션 구현 경험**
+    - 🚘 **사용자 몰입형 UI/UX 제공**
+    - 🧠 **어린이도 쉽게 즐길 수 있는 검사 서비스**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 💡 문제 인식 및 해결 방향
 
-## Learn More
+| 문제점 | 해결 방안 |
+|--------|------------|
+| 기존 성격검사는 텍스트 위주로 이해가 어려움 | 3D 자동차 모델을 활용해 시각적·직관적 표현 |
+| 흥미 유지 어려움 | 클릭, 회전, 색상 변경 등 **실시간 인터랙션 요소** 추가 |
+| 결과 해석이 복잡함 | **실시간 계산 + 시각화 피드백**으로 직관적 결과 제공 |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧰 기술 스택 (Tech Stack)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| 구분 | 기술 |
+|------|------|
+| **Frontend** | Next.js (App Router), React, TypeScript |
+| **Styling** | Tailwind CSS |
+| **State Management** | Zustand (전역 상태), React Query (서버 상태) |
+| **Database** | Supabase |
+| **Backend (API)** | Next.js API Routes |
+| **Auth** | JWT + Session 기반 인증 |
+| **Deployment** | Vercel |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧑‍💻 주요 기능
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 1. 회원가입 & 로그인
+- 이메일 기반 인증 시스템
+- JWT + Session 기반 로그인 유지
+- 사용자별 검사 결과 DB 저장
+
+### 2. 성격 유형 검사
+- **5가지 자동차 유형** 기반의 질문 제공
+- **Three.js 3D 자동차 모델**과의 인터랙션 (회전 / 클릭 / 색상 변경)
+- 선택값을 **Zustand로 전역 상태 관리**
+
+### 3. 결과 분석 & 시각화
+- 가장 높은 점수를 받은 자동차 유형을 자동 도출
+- 해당 자동차를 이용한 **시각적 결과 페이지 렌더링**
+- 각 유형에 맞는 색상 강조 및 애니메이션 제공
+
+### 4. 데이터 저장 및 관리
+- Supabase에 사용자 선택 내역 및 결과 저장
+- 향후 **통계 / 랭킹 / 추천 기능**으로 확장 가능
+
+---
+
+## 🚙 자동차 유형별 성격
+
+| 자동차 | 키워드 | 유형 설명 |
+|--------|--------|-----------|
+| 🏎️ **스포츠카** | 열정 · 도전 · 스피드 | 모험적이며 도전적인 성향 |
+| 🚘 **전기차** | 혁신 · 환경 · 미래 | 창의적이고 진보적인 성향 |
+| 🚓 **경찰차** | 질서 · 정의 · 책임 | 규칙과 책임을 중시 |
+| 🚒 **소방차** | 헌신 · 희생 · 배려 | 타인을 돕는 따뜻한 성향 |
+| 🚛 **트럭** | 강인 · 실용 · 노력 | 현실적이고 꾸준한 노력형 |
+
+---
+
+## 📝 질문 예시
+
+| 번호 | 질문 | 관련 유형 |
+|------|------|------------|
+| 1 | 나는 새로운 일을 시작할 때 적극적으로 도전하는 편이다. | 🏎️ 스포츠카형 |
+| 2 | 나는 계획을 세우고 체계적으로 행동하는 편이다. | 🚓 경찰차형 |
+| 3 | 나는 주변 사람들을 먼저 챙기고 배려하는 편이다. | 🚒 소방차형 |
+| 4 | 나는 새로운 기술이나 트렌드에 관심이 많다. | 🚘 전기차형 |
+| 5 | 나는 맡은 일을 끝까지 책임지고 완수하는 편이다. | 🚛 트럭형 |
+
+---
+
+## 🎯 향후 개선 방향
+
+- AI 기반 추천: 검사 결과를 바탕으로 맞춤형 자동차 제안
+- 친구 비교 기능: 성격 유형 매칭 시스템 도입
+- 게임 요소 추가: 점수제·도전 미션 기능으로 참여도 향상
+
+---
+
+## 🧭 프로젝트 한줄 요약
+
+> **"차차(Chacha)"는 어린이도 재미있게 즐길 수 있는 3D 인터랙티브 성격검사 웹 서비스입니다.**
