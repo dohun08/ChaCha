@@ -1,13 +1,33 @@
 'use client';
-
 declare global {
 	interface Window {
-		Kakao: any;
+		Kakao: {
+			init: (key: string) => void;
+			isInitialized: () => boolean;
+			Share: {
+				sendDefault: (obj: {
+					objectType: string;
+					content: {
+						title: string;
+						description?: string;
+						imageUrl?: string;
+						link: {
+							mobileWebUrl: string;
+							webUrl: string;
+						};
+					};
+					buttons?: Array<{
+						title: string;
+						link: {
+							mobileWebUrl: string;
+							webUrl: string;
+						};
+					}>;
+				}) => void;
+			};
+		};
 	}
 }
-
-export {};
-import Image from 'next/image';
 import CarModel from "@/containers/result/CarModel";
 import { useResultStore } from "@/store/useResult";
 import { useEffect, useState } from "react";
